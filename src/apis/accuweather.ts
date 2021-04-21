@@ -48,7 +48,7 @@ export class AccuWeatherError extends Error {
     /**
      * A custom error class for identifying configuration problems using the AccuWeatherAPI class.
      *
-     * @constructs AccuWeatherAPI
+     * @constructs AccuWeatherError
      *
      * @param errorMessage A brief message indicating what went wrong.
      */
