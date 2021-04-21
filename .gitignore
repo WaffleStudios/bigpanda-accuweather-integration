@@ -1,3 +1,10 @@
+.idea
+
+# Ignore compiled JavaScript files.
+src/**/*.js
+
+## GITHUB DEFAULT GITIGNORE FOR NODEJS ##
+
 # Logs
 logs
 *.log

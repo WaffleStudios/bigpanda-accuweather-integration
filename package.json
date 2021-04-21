@@ -1,0 +1,33 @@
+{
+  "name": "bigpanda-accuweather-integration",
+  "version": "1.0.0",
+  "description": "A simple integration that retrieves weather information for a pre-selected group of locations from the AccuWeather API and integrates the retrieved information as a BigPanda alert",
+  "main": "src/index.ts",
+  "scripts": {
+    "prestart": "tsc -p tsconfig.json",
+    "start": "node src/index.js",
+    "pretest": "tsc -p tsconfig.json",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WaffleStudios/bigpanda-accuweather-integration.git"
+  },
+  "author": "Rob Stemen <rob.stemen@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WaffleStudios/bigpanda-accuweather-integration/issues"
+  },
+  "homepage": "https://github.com/WaffleStudios/bigpanda-accuweather-integration#readme",
+  "dependencies": {
+    "aws-sdk": "^2.889.0",
+    "dotenv": "^8.2.0",
+    "got": "^11.8.2",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
+    "nock": "^13.0.11"
+  }
+}
