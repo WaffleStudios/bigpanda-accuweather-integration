@@ -51,15 +51,15 @@ export class AccuWeatherAPI {
      *          but I've only seen it come through as an array with a size of 1, so just provide response[0] for now.
      */
     formatConditionsAsBigPandaAlert(location: string, locationID: string, conditionsJSON: object) {
-        return new Promise((resolve) => {
-            if(!location || location.trim() === "") {
-                throw new AccuWeatherError("Error: Please provide a location name to format the BigPanda alert.");
-            } else if(!locationID || locationID.trim() === "") {
-                throw new AccuWeatherError("Error: Please provide a location ID to format the BigPanda alert.");
-            } else if(!conditionsJSON || conditionsJSON === {}) {
-                throw new AccuWeatherError("Error: Please provide a valid response from the Current Conditions endpoint.");
-            }
+        if(!location || location.trim() === "") {
+            throw new AccuWeatherError("Error: Please provide a location name to format the BigPanda alert.");
+        } else if(!locationID || locationID.trim() === "") {
+            throw new AccuWeatherError("Error: Please provide a location ID to format the BigPanda alert.");
+        } else if(!conditionsJSON || !Object.keys(conditionsJSON).length) {
+            throw new AccuWeatherError("Error: Please provide a valid response from the Current Conditions endpoint.");
+        }
 
+        return new Promise((resolve) => {
             let alertJSON: object = {
                 host: location,
                 status: "warning",
