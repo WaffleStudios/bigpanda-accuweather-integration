@@ -2,5 +2,13 @@
   "exclude": [
     "./test/",
     "./node_modules/"
-  ]
+  ],
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.collection"
+    ]
+  }
 }
