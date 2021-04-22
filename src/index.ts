@@ -8,6 +8,7 @@
 require("dotenv").config();
 
 import { AccuWeatherAPI } from "./apis/accuweather";
+import { BigPandaAPI } from "./apis/bigpanda";
 
 /**
  * Initializing the locations as a map is a very easy way for me to do the exercise, while providing me the flexibility to
@@ -35,11 +36,20 @@ locations.set("Chicago", ["348308", "2249562", "1162619", "1169367", "1068089"])
  * is doing, what we use it for, and what values are required to use that API or method.
  */
 const accuWeatherAPI: AccuWeatherAPI = new AccuWeatherAPI(process.env.ACCUWEATHER_API_KEY);
+const bigPandaAPI: BigPandaAPI = new BigPandaAPI(process.env.BIGPANDA_BEARER_TOKEN);
 
-locations.forEach((locationIds: string[]) => {
-    locationIds.forEach((locationId: string) => {
-        accuWeatherAPI.fetchCurrentConditions(locationId)
-            .then(({ body }) => console.log(JSON.stringify(body)))
+locations.forEach((locationIDs: string[], location: string) => {
+    locationIDs.forEach((locationID: string) => {
+        accuWeatherAPI.fetchCurrentConditions(locationID)
+            .then(({ body }) => accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationID, body[0]))
+            .then((alertJSON: object) => bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, alertJSON))
+            .then((response) => {
+                if(response.statusCode == 201) {
+                    console.log("BigPanda Alert Successfully Processed!");
+                } else {
+                    console.log("Something Went Wrong! Status Code: ${statusCode}")
+                }
+            })
             .catch((error) => {
                 if (error.response) {
                     console.error(`HTTP Error`);
