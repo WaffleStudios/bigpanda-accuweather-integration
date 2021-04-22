@@ -44,7 +44,7 @@ locations.forEach((locationIDs: string[], location: string) => {
             .then(({ body }) => accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationID, body[0]))
             .then((alertJSON: object) => bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, alertJSON))
             .then((response) => {
-                if(response.statusCode == 201) {
+                if(response.statusCode === 201) {
                     console.log("BigPanda Alert Successfully Processed!");
                 } else {
                     console.log("Something Went Wrong! Status Code: ${statusCode}")
