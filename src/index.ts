@@ -5,9 +5,9 @@
  * these things is easily, and by default, filtered out using .gitignore, and allows an easy and concise way to share
  * important login or API information within a group of people, if need be, and without requiring a complicated setup.
  */
-require('dotenv').config();
+require("dotenv").config();
 
-import { AccuWeatherAPI } from './apis/accuweather';
+import { AccuWeatherAPI } from "./apis/accuweather";
 
 /**
  * Initializing the locations as a map is a very easy way for me to do the exercise, while providing me the flexibility to
@@ -24,9 +24,9 @@ import { AccuWeatherAPI } from './apis/accuweather';
  */
 const locations: Map<string, string[]> = new Map<string, string[]>();
 
-locations.set('San Francisco', ['347629', '113032', '261737', '3409211', '262723']);
-locations.set('New York', ['349727', '710949', '2531279', '2245721', '2212053']);
-locations.set('Chicago', ['348308', '2249562', '1162619', '1169367', '1068089']);
+locations.set("San Francisco", ["347629", "113032", "261737", "3409211", "262723"]);
+locations.set("New York", ["349727", "710949", "2531279", "2245721", "2212053"]);
+locations.set("Chicago", ["348308", "2249562", "1162619", "1169367", "1068089"]);
 
 
 /**

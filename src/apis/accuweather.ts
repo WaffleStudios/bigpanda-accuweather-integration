@@ -16,7 +16,7 @@ export class AccuWeatherAPI {
      * @param apiKey The API key provided by the AccuWeather service.  Throws an error if the key is empty or undefined.
      */
     constructor(apiKey: string) {
-        if(!apiKey || apiKey.trim() === '') {
+        if(!apiKey || apiKey.trim() === "") {
             throw new AccuWeatherError("Error: An API key is required to use the AccuWeather service.");
         }
 
@@ -31,14 +31,14 @@ export class AccuWeatherAPI {
      * @param locationId The AccuWeather location ID.  Throws an error if the key is empty or undefined.
      */
     fetchCurrentConditions(locationId: string) {
-        if (!locationId || locationId.trim() === '') {
+        if (!locationId || locationId.trim() === "") {
             throw new AccuWeatherError("Error: Please provide a location ID to fetch weather conditions.");
         }
 
         return got(`${AccuWeatherAPI.apiUrl}/currentconditions/v1/${locationId}`, {
             searchParams: {apikey: this.apiKey},
             method: "GET",
-            responseType: 'json'
+            responseType: "json"
         });
     }
 }

@@ -1,8 +1,8 @@
 const { AccuWeatherAPI, AccuWeatherError } = require("../src/apis/accuweather");
 
-const { expect } = require('chai');
-const nock = require('nock');
-const responses = require('./accuweather-responses');
+const { expect } = require("chai");
+const nock = require("nock");
+const responses = require("./accuweather-responses");
 
 const locationId = "location_id";
 const apiKey = "api_key";
@@ -20,12 +20,12 @@ describe('AccuWeather', () => {
         });
 
         it('Empty API key', () => {
-            const emptyDeclaration = () => { new AccuWeatherAPI('') };
+            const emptyDeclaration = () => { new AccuWeatherAPI("") };
             expect(emptyDeclaration).to.throw(AccuWeatherError);
         });
 
         it('API key trims to empty', () => {
-            const trimDeclaration = () => { new AccuWeatherAPI('     ') };
+            const trimDeclaration = () => { new AccuWeatherAPI("     ") };
             expect(trimDeclaration).to.throw(AccuWeatherError);
         });
     });
@@ -39,13 +39,13 @@ describe('AccuWeather', () => {
 
         it('Empty location ID', () => {
             const accuWeatherAPI = new AccuWeatherAPI(apiKey);
-            const emptyDeclaration = () => { accuWeatherAPI.fetchCurrentConditions('') };
+            const emptyDeclaration = () => { accuWeatherAPI.fetchCurrentConditions("") };
             expect(emptyDeclaration).to.throw(AccuWeatherError);
         });
 
         it('Location ID trims to empty', () => {
             const accuWeatherAPI = new AccuWeatherAPI(apiKey);
-            const trimDeclaration = () => { accuWeatherAPI.fetchCurrentConditions('     ') };
+            const trimDeclaration = () => { accuWeatherAPI.fetchCurrentConditions("     ") };
             expect(trimDeclaration).to.throw(AccuWeatherError);
         });
     });
@@ -63,12 +63,12 @@ describe('AccuWeather', () => {
             accuWeatherAPI.fetchCurrentConditions(locationId)
                 .then(({ body }) => {
                     const weatherResponse = body[0];
-                    expect(weatherResponse.WeatherText).to.equal('Partly cloudy');
+                    expect(weatherResponse.WeatherText).to.equal("Partly cloudy");
                     expect(weatherResponse.HasPrecipitation).to.equal(false);
                     expect(weatherResponse.PrecipitationType).to.equal(null);
                     expect(weatherResponse.Temperature.Imperial.Value).to.equal(62);
                     expect(weatherResponse.Temperature.Metric.Value).to.equal(16.7);
-                    expect(weatherResponse.Link).to.equal('http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us');
+                    expect(weatherResponse.Link).to.equal("http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us");
                     done();
                 });
         });

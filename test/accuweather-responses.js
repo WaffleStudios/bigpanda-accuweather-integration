@@ -1,8 +1,8 @@
 module.exports = {
     200: [{
-        LocalObservationDateTime: '2021-04-20T22:40:00-04:00',
+        LocalObservationDateTime: "2021-04-20T22:40:00-04:00",
         EpochTime: 1618976393,
-        WeatherText: 'Partly cloudy',
+        WeatherText: "Partly cloudy",
         WeatherIcon: 3,
         HasPrecipitation: false,
         PrecipitationType: null,
@@ -10,16 +10,16 @@ module.exports = {
         Temperature: {
             Metric: {
                 Value: 16.7,
-                Unit: 'C',
+                Unit: "C",
                 UnitType: 17,
             },
             Imperial: {
                 Value: 62,
-                Unit: 'F',
+                Unit: "F",
                 UnitType: 18,
             },
         },
-        MobileLink: 'http://m.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us',
-        Link: 'http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us',
+        MobileLink: "http://m.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
+        Link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
     }]
 };

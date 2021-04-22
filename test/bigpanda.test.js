@@ -1,22 +1,22 @@
 const { BigPandaAPI, BigPandaError } = require("../src/apis/bigpanda");
 
-const { expect } = require('chai');
-const nock = require('nock');
-const responses = require('./bigpanda-responses');
+const { expect } = require("chai");
+const nock = require("nock");
+const responses = require("./bigpanda-responses");
 
 const bearerToken = "bearer_token";
 const appKey = "app_key";
 
 const alertPayload = {
-    app_key: 'test_app_key',
-    status: 'warning',
-    host: 'test_location',
-    check: 'Weather Check',
-    incident_identifier: 'test_location_id',
-    condition: 'Partly sunny',
+    app_key: "test_app_key",
+    status: "warning",
+    host: "test_location",
+    check: "Weather Check",
+    incident_identifier: "test_location_id",
+    condition: "Partly sunny",
     precipitation: false,
     precipitation_type: null,
-    link: 'http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us',
+    link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
 };
 
 const bigPandaAPI = new BigPandaAPI(bearerToken);
