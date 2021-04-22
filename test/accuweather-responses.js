@@ -21,10 +21,5 @@ module.exports = {
         },
         MobileLink: 'http://m.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us',
         Link: 'http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us',
-    }],
-    503: {
-        Code: "ServiceUnavailable",
-        Message: "The allowed number of requests has been exceeded.",
-        Reference: "/currentconditions/v1/{locationCode}?apikey={apikey}"
-    }
+    }]
 };
