@@ -41,6 +41,39 @@ export class AccuWeatherAPI {
             responseType: "json"
         });
     }
+
+    /**
+     * Takes a current conditions JSON response and assigns the relevant values to a format used by the BigPanda alert API.
+     * @param location The city name.  Used as the "host" to condense weather events by city.  Cannot be empty.
+     * @param locationID The location ID.  Used as the incident identifier to clarify different weather events in different
+     *          parts of a city.  Cannot be empty.
+     * @param conditionsJSON The response received from the current conditions endpoint.  Technically, we receive an array
+     *          but I've only seen it come through as an array with a size of 1, so just provide response[0] for now.
+     */
+    formatConditionsAsBigPandaAlert(location: string, locationID: string, conditionsJSON: object) {
+        return new Promise((resolve) => {
+            if(!location || location.trim() === "") {
+                throw new AccuWeatherError("Error: Please provide a location name to format the BigPanda alert.");
+            } else if(!locationID || locationID.trim() === "") {
+                throw new AccuWeatherError("Error: Please provide a location ID to format the BigPanda alert.");
+            } else if(!conditionsJSON || conditionsJSON === {}) {
+                throw new AccuWeatherError("Error: Please provide a valid response from the Current Conditions endpoint.");
+            }
+
+            let alertJSON: object = {
+                host: location,
+                status: "warning",
+                check: 'Weather Check',
+                incident_identifier: locationID,
+                condition: conditionsJSON["WeatherText"],
+                precipitation: conditionsJSON["HasPrecipitation"],
+                precipitation_type: conditionsJSON["PrecipitationType"],
+                link: conditionsJSON["Link"]
+            };
+
+            resolve(alertJSON);
+        });
+    }
 }
 
 export class AccuWeatherError extends Error {
