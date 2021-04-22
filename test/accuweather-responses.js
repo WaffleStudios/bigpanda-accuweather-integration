@@ -21,5 +21,15 @@ module.exports = {
         },
         MobileLink: "http://m.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
         Link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
-    }]
+    }],
+    bigPandaAlert: {
+        host: "location",
+        status: "warning",
+        check: 'Weather Check',
+        incident_identifier: "location_id",
+        condition: "Partly cloudy",
+        precipitation: false,
+        precipitation_type: null,
+        link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us"
+    }
 };

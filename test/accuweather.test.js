@@ -4,6 +4,7 @@ const { expect } = require("chai");
 const nock = require("nock");
 const responses = require("./accuweather-responses");
 
+const location = "location";
 const locationId = "location_id";
 const apiKey = "api_key";
 
@@ -12,7 +13,14 @@ const apiKey = "api_key";
  * correctly.  I'm using these tests to make sure that all of my problem cases are addressed and provide useful, meaningful
  * responses, as well as to test a sunny day API call.  Uses the `nock` library to mock the API calls being made.
  */
-describe('AccuWeather', () => {
+
+/**
+ * This is a suite of tests designed to test the AccuWeather API configuration.  This tests creating a new API instance
+ * with invalid credentials, running an API call without providing a location ID, and a successful test.
+ */
+describe('AccuWeather API', () => {
+    const accuWeatherAPI = new AccuWeatherAPI(apiKey);
+
     describe('Invalid API Key', () => {
         it('Undefined API key', () => {
             const undefinedDeclaration = () => { new AccuWeatherAPI() };
@@ -32,19 +40,16 @@ describe('AccuWeather', () => {
 
     describe('Invalid Location ID', () => {
         it('Undefined location ID', () => {
-            const accuWeatherAPI = new AccuWeatherAPI(apiKey);
             const undefinedDeclaration = () => { accuWeatherAPI.fetchCurrentConditions() };
             expect(undefinedDeclaration).to.throw(AccuWeatherError);
         });
 
         it('Empty location ID', () => {
-            const accuWeatherAPI = new AccuWeatherAPI(apiKey);
             const emptyDeclaration = () => { accuWeatherAPI.fetchCurrentConditions("") };
             expect(emptyDeclaration).to.throw(AccuWeatherError);
         });
 
         it('Location ID trims to empty', () => {
-            const accuWeatherAPI = new AccuWeatherAPI(apiKey);
             const trimDeclaration = () => { accuWeatherAPI.fetchCurrentConditions("     ") };
             expect(trimDeclaration).to.throw(AccuWeatherError);
         });
@@ -59,7 +64,6 @@ describe('AccuWeather', () => {
         });
 
         it('Current weather conditions are fetched.', (done) => {
-            const accuWeatherAPI = new AccuWeatherAPI(apiKey);
             accuWeatherAPI.fetchCurrentConditions(locationId)
                 .then(({ body }) => {
                     const weatherResponse = body[0];
@@ -71,6 +75,71 @@ describe('AccuWeather', () => {
                     expect(weatherResponse.Link).to.equal("http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us");
                     done();
                 });
+        });
+    });
+});
+
+/**
+ * This is a suite of tests designed to test the AccuWeather API configuration.  This tests creating a new API instance
+ * with invalid credentials, running an API call without providing a location ID, and a successful test.
+ */
+describe('AccuWeather JSON Conversion', () => {
+    const accuWeatherAPI = new AccuWeatherAPI(apiKey);
+
+    describe('Invalid Location', () => {
+        it('Undefined location', () => {
+            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(undefined, locationId, responses["200"][0]) };
+            expect(undefinedDeclaration).to.throw(AccuWeatherError, "location name");
+        });
+
+        it('Empty location', () => {
+            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert("", locationId, responses["200"][0]) };
+            expect(emptyDeclaration).to.throw(AccuWeatherError, "location name");
+        });
+
+        it('Location trims to empty', () => {
+            const trimDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert("     ", locationId, responses["200"][0]) };
+            expect(trimDeclaration).to.throw(AccuWeatherError, "location name");
+        });
+    });
+
+    describe('Invalid Location ID', () => {
+        it('Undefined location ID', () => {
+            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, undefined, responses["200"][0]) };
+            expect(undefinedDeclaration).to.throw(AccuWeatherError, "location ID");
+        });
+
+        it('Empty location ID', () => {
+            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, "", responses["200"][0]) };
+            expect(emptyDeclaration).to.throw(AccuWeatherError, "location ID");
+        });
+
+        it('Location ID trims to empty', () => {
+            const trimDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, "     ", responses["200"][0]) };
+            expect(trimDeclaration).to.throw(AccuWeatherError, "location ID");
+        });
+    });
+
+    describe('Invalid JSON', () => {
+        it('Undefined JSON', () => {
+            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationId, undefined) };
+            expect(undefinedDeclaration).to.throw(AccuWeatherError, "valid response");
+        });
+
+        it('Empty JSON', () => {
+            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationId, {}) };
+            expect(emptyDeclaration).to.throw(AccuWeatherError, "valid response");
+        });
+    });
+
+    describe('Successful Conversion', () => {
+        it('JSON is successfully converted to a BigPanda alert.', (done) => {
+            accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationId, responses["200"][0])
+                .then((alertJSON) => {
+                    expect(JSON.stringify(alertJSON)).to.equal(JSON.stringify(responses["bigPandaAlert"]));
+                    done();
+                })
+                .catch((err) => done(err));
         });
     });
 });
