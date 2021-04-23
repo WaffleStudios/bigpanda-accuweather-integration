@@ -5,10 +5,14 @@
  * these things is easily, and by default, filtered out using .gitignore, and allows an easy and concise way to share
  * important login or API information within a group of people, if need be, and without requiring a complicated setup.
  */
+
 require("dotenv").config();
+
+import { Message } from "aws-sdk/clients/sqs";
 
 import { AccuWeatherAPI } from "./apis/accuweather";
 import { BigPandaAPI } from "./apis/bigpanda";
+import { SQSHandler } from "./sqs-handler";
 
 /**
  * Initializing the locations as a map is a very easy way for me to do the exercise, while providing me the flexibility to
@@ -38,27 +42,52 @@ locations.set("Chicago", ["348308", "2249562", "1162619", "1169367", "1068089"])
 const accuWeatherAPI: AccuWeatherAPI = new AccuWeatherAPI(process.env.ACCUWEATHER_API_KEY);
 const bigPandaAPI: BigPandaAPI = new BigPandaAPI(process.env.BIGPANDA_BEARER_TOKEN);
 
-locations.forEach((locationIDs: string[], location: string) => {
-    locationIDs.forEach((locationID: string) => {
-        accuWeatherAPI.fetchCurrentConditions(locationID)
-            .then(({ body }) => accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationID, body[0]))
-            .then((alertJSON: object) => bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, alertJSON))
-            .then((response) => {
-                if(response.statusCode === 201) {
-                    console.log("BigPanda Alert Successfully Processed!");
-                } else {
-                    console.log("Something Went Wrong! Status Code: ${statusCode}")
-                }
-            })
-            .catch((error) => {
-                if (error.response) {
-                    console.error(`HTTP Error`);
-                    console.error(`Status Code: ${error.response.statusCode}`);
-                    console.error(`Error Message: ${error.response.statusMessage}`);
-                } else {
-                    console.error(error.name);
-                    console.error(error.message);
-                }
-            });
+try {
+    const sqsHandler: SQSHandler = new SQSHandler(process.env.AWS_SQS_URL);
+
+    sqsHandler.startListener((message: Message) => {
+        bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
+            .then(() => sqsHandler.deleteMessage(message.ReceiptHandle))
+            .then(() => console.log("BigPanda Alert Successfully Processed!"))
+            .catch((error) => handleApiError(error));
     });
-});
+
+    /**
+     * SQS offers configurations to retry messages a number of times between 1-100.  After the specified number of retries,
+     * SQS will automatically move the message into a configurable dead-letter queue.
+     *
+     * Uncomment this block of code to start a Dead-Letter queue listener.  Currently just logs the message body.
+     */
+     // const deadLetterHandler: SQSHandler = new SQSHandler(process.env.AWS_DLQ_URL);
+     // deadLetterHandler.startListener((message: Message) => console.log(`Dead-Letter: ${JSON.stringify(message.Body)}`));
+
+
+    locations.forEach((locationIDs: string[], location: string) => {
+        locationIDs.forEach((locationID: string) => {
+            accuWeatherAPI.fetchCurrentConditions(locationID)
+                .then(({ body }) => accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationID, body[0]))
+                .then((alertJSON: object) => sqsHandler.sendMessage(JSON.stringify(alertJSON)))
+                .then((messageID) => console.log(`Message Successfully Queued! SQS Message ID: ${messageID}`))
+                .catch((error) => handleApiError(error));
+        });
+    });
+} catch(err) {
+    console.error(err);
+}
+
+/**
+ * This is just a simple class to handle errors coming from any of the API or web handler classes.  Since they're always
+ * either HTTP errors from `got` or standard errors, the handling is the same.  This is just a code cleanliness thing to
+ * keep it dry.  This just logs details about the error for help debugging.
+ * @param error
+ */
+function handleApiError(error: Error) {
+    if (error["response"]) {
+        console.error(`HTTP Error`);
+        console.error(`Status Code: ${error["response"].statusCode}`);
+        console.error(`Error Message: ${error["response"].statusMessage}`);
+    } else {
+        console.error(error.name);
+        console.error(error.message);
+    }
+}
