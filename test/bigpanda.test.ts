@@ -1,4 +1,4 @@
-import { BigPandaAPI, BigPandaError } from "../src/apis/bigpanda";
+import { BigPandaAPI, BigPandaError } from "../src/api-handlers/bigpanda";
 
 import { expect } from "chai";
 const nock = require("nock");

@@ -58,11 +58,7 @@ export class SQSHandler {
     }
 
     /**
-     * Initializes a consumer for the SQS queue URL provided in the construction of the Handler.  Normally, in a live app
-     * using SQS, I would use a Lambda to do this. This is because you are able to tie a Lambda in with the SQS so that the
-     * Lambda is able to process the queued message upon receipt. For the purposes of this exercise or a case where, for some
-     * reason, a Lambda could not be used, you can run this as a standalone service to listen and process messages in a
-     * provided SQS queue.
+     * Initializes a consumer for the SQS queue URL provided in the construction of the Handler.
      * @param messageHandler A callback method which process a message from the SQS queue.
      */
     startConsumer(messageHandler: (message: Message) => void) {
@@ -85,10 +81,6 @@ export class SQSHandler {
         app.on('timeout_error', (error) => {
             console.error(error.name);
             console.error(error.message);
-        });
-
-        app.on('empty', () => {
-            console.log("Queue Empty!");
         });
 
         app.on('stopped', () => {

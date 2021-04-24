@@ -1,4 +1,4 @@
-import { AccuWeatherAPI, AccuWeatherError } from "../src/apis/accuweather";
+import { AccuWeatherAPI, AccuWeatherError } from "../src/api-handlers/accuweather";
 
 import { expect } from "chai";
 const nock = require("nock");
