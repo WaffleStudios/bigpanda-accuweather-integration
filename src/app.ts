@@ -47,7 +47,6 @@ try {
 
     sqsHandler.startConsumer((message: Message) => {
         bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
-            .then(() => sqsHandler.deleteMessage(message.ReceiptHandle))
             .then(() => console.log("BigPanda Alert Successfully Processed!"))
             .catch((error) => handleApiError(error));
     });
@@ -61,7 +60,6 @@ try {
     // const deadLetterHandler: SQSHandler = new SQSHandler(process.env.AWS_DLQ_URL);
     // deadLetterHandler.startConsumer((message: Message) => {
     //     bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
-    //         .then(() => sqsHandler.deleteMessage(message.ReceiptHandle))
     //         .then(() => console.log("BigPanda Alert Successfully Processed!"))
     //         .catch((error) => handleApiError(error));
     // });

@@ -66,24 +66,6 @@ export class SQSHandler {
     }
 
     /**
-     * Removes a provided message from the SQS queue.  This is generally run after confirming that the message was received
-     * and processed correctly so that we don't try to process the same message again.
-     * @param receiptHandle A string representing the AWS-generated Receipt Handle for a message in the SQS queue.
-     */
-    deleteMessage(receiptHandle: string) {
-        if(!receiptHandle || receiptHandle.trim() === "") {
-            throw new SQSHandlerError("Please provide a valid receipt handle to delete.");
-        }
-
-        const params = {
-            ReceiptHandle: receiptHandle,
-            QueueUrl: this.url
-        };
-
-        return this.sqs.deleteMessage(params).promise();
-    }
-
-    /**
      * Initializes a consumer for the SQS queue URL provided in the construction of the Handler.  Normally, in a live app
      * using SQS, I would use a Lambda to do this. This is because you are able to tie a Lambda in with the SQS so that the
      * Lambda is able to process the queued message upon receipt. For the purposes of this exercise or a case where, for some
