@@ -1,14 +1,19 @@
+import * as SQS from "aws-sdk/clients/sqs";
+
 require('dotenv').config();
 
 const AWS = require("aws-sdk");
 const https = require("https");
 const { Consumer } = require("sqs-consumer");
-import { Message } from "aws-sdk/clients/sqs";
+import {
+    Message,
+    SendMessageRequest,
+} from "aws-sdk/clients/sqs";
 
 
 export class SQSHandler {
     private url: string;
-    private sqs: any;
+    private sqs: SQS;
 
     /**
      * Creates a class for managing the message queue using AWS SQS using a queue URL.  Something that I think would be good
@@ -51,7 +56,7 @@ export class SQSHandler {
             throw new SQSHandlerError("Please provide a valid message to send to SQS.");
         }
 
-        const params = {
+        const params: SendMessageRequest = {
             DelaySeconds: 10,
             MessageBody: message,
             QueueUrl: this.url
