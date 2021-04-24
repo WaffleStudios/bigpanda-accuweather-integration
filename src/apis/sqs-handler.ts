@@ -9,7 +9,6 @@ import {
     SendMessageRequest,
 } from "aws-sdk/clients/sqs";
 
-
 export class SQSHandler {
     private url: string;
     private sqs: SQS;
@@ -73,16 +72,19 @@ export class SQSHandler {
             sqs: this.sqs
         });
 
-        app.on('error', (err) => {
-            throw new SQSHandlerError(err.message);
+        app.on('error', (error) => {
+            console.error(error.name);
+            console.error(error.message);
         });
 
-        app.on('processing_error', (err) => {
-            throw new SQSHandlerError(err.message);
+        app.on('processing_error', (error) => {
+            console.error(error.name);
+            console.error(error.message);
         });
 
-        app.on('timeout_error', (err) => {
-            throw new SQSHandlerError(err.message);
+        app.on('timeout_error', (error) => {
+            console.error(error.name);
+            console.error(error.message);
         });
 
         app.on('empty', () => {
