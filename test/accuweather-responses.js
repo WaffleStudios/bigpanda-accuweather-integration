@@ -25,11 +25,13 @@ module.exports = {
     bigPandaAlert: {
         host: "location",
         status: "warning",
-        check: 'Weather Check',
+        check: "Partly cloudy",
         incident_identifier: "location_id",
         condition: "Partly cloudy",
         precipitation: false,
         precipitation_type: null,
-        link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us"
+        link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
+        temperature_celsius: 16.7,
+        temperature_farenheit: 62
     }
 };

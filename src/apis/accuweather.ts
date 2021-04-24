@@ -63,12 +63,14 @@ export class AccuWeatherAPI {
             let alertJSON: object = {
                 host: location,
                 status: "warning",
-                check: 'Weather Check',
+                check: conditionsJSON["WeatherText"],
                 incident_identifier: locationID,
                 condition: conditionsJSON["WeatherText"],
                 precipitation: conditionsJSON["HasPrecipitation"],
                 precipitation_type: conditionsJSON["PrecipitationType"],
-                link: conditionsJSON["Link"]
+                link: conditionsJSON["Link"],
+                temperature_celsius: conditionsJSON["Temperature"]["Metric"]["Value"],
+                temperature_farenheit: conditionsJSON["Temperature"]["Imperial"]["Value"]
             };
 
             resolve(alertJSON);
