@@ -8,6 +8,7 @@ A simple integration tool that retrieves weather information for a pre-selected 
 There are two steps to begin using this tool.
 
 1. Using the text editor of your choice, create a file named `.env` in the root directory of this project, and add the following lines, applying the specified API key as listed:
+   
     ```
     # Required In-App
     BIGPANDA_API_KEY=${BigPanda Integration API Key}
@@ -22,7 +23,7 @@ There are two steps to begin using this tool.
     ```
  
 2. Ensure that all of the required NPM libraries are installed.  To do so, run the following command:
-        
+
     ```
     npm install
     ```
