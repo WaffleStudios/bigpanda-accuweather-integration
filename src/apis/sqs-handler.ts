@@ -41,6 +41,11 @@ export class SQSHandler {
         this.url = url;
     }
 
+    /**
+     * Adds a provided message to the SQS queue.  For the purposes of the exercise, this will be a JSON string of the BigPanda
+     * alert message, but this method could be used to send any message.
+     * @param message A non-empty string to apply as the message body for the SQS message.
+     */
     sendMessage(message: string) {
         if(!message || message.trim() === "") {
             throw new SQSHandlerError("Please provide a valid message to send to SQS.");
@@ -64,6 +69,11 @@ export class SQSHandler {
         });
     }
 
+    /**
+     * Removes a provided message from the SQS queue.  This is generally run after confirming that the message was received
+     * and processed correctly so that we don't try to process the same message again.
+     * @param receiptHandle A string representing the AWS-generated Receipt Handle for a message in the SQS queue.
+     */
     deleteMessage(receiptHandle: string) {
         if(!receiptHandle || receiptHandle.trim() === "") {
             throw new SQSHandlerError("Please provide a valid receipt handle to delete.");
@@ -86,7 +96,15 @@ export class SQSHandler {
         });
     }
 
-    startListener(messageHandler: (message: Message) => void) {
+    /**
+     * Initializes a consumer for the SQS queue URL provided in the construction of the Handler.  Normally, in a live app
+     * using SQS, I would use a Lambda to do this. This is because you are able to tie a Lambda in with the SQS so that the
+     * Lambda is able to process the queued message upon receipt. For the purposes of this exercise or a case where, for some
+     * reason, a Lambda could not be used, you can run this as a standalone service to listen and process messages in a
+     * provided SQS queue.
+     * @param messageHandler A callback method which process a message from the SQS queue.
+     */
+    startConsumer(messageHandler: (message: Message) => void) {
         const app = Consumer.create({
             queueUrl: this.url,
             handleMessage: messageHandler,

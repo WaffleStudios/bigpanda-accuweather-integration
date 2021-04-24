@@ -12,7 +12,7 @@ import { Message } from "aws-sdk/clients/sqs";
 
 import { AccuWeatherAPI } from "./apis/accuweather";
 import { BigPandaAPI } from "./apis/bigpanda";
-import { SQSHandler } from "./sqs-handler";
+import { SQSHandler } from "./apis/sqs-handler";
 
 /**
  * Initializing the locations as a map is a very easy way for me to do the exercise, while providing me the flexibility to
@@ -45,7 +45,7 @@ const bigPandaAPI: BigPandaAPI = new BigPandaAPI(process.env.BIGPANDA_BEARER_TOK
 try {
     const sqsHandler: SQSHandler = new SQSHandler(process.env.AWS_SQS_URL);
 
-    sqsHandler.startListener((message: Message) => {
+    sqsHandler.startConsumer((message: Message) => {
         bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
             .then(() => sqsHandler.deleteMessage(message.ReceiptHandle))
             .then(() => console.log("BigPanda Alert Successfully Processed!"))
@@ -56,10 +56,15 @@ try {
      * SQS offers configurations to retry messages a number of times between 1-100.  After the specified number of retries,
      * SQS will automatically move the message into a configurable dead-letter queue.
      *
-     * Uncomment this block of code to start a Dead-Letter queue listener.  Currently just logs the message body.
+     * Uncomment this block of code to start a Dead-Letter queue listener.
      */
-     // const deadLetterHandler: SQSHandler = new SQSHandler(process.env.AWS_DLQ_URL);
-     // deadLetterHandler.startListener((message: Message) => console.log(`Dead-Letter: ${JSON.stringify(message.Body)}`));
+    // const deadLetterHandler: SQSHandler = new SQSHandler(process.env.AWS_DLQ_URL);
+    // deadLetterHandler.startConsumer((message: Message) => {
+    //     bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
+    //         .then(() => sqsHandler.deleteMessage(message.ReceiptHandle))
+    //         .then(() => console.log("BigPanda Alert Successfully Processed!"))
+    //         .catch((error) => handleApiError(error));
+    // });
 
 
     locations.forEach((locationIDs: string[], location: string) => {

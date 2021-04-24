@@ -2,7 +2,7 @@
   "name": "bigpanda-accuweather-integration",
   "version": "1.0.0",
   "description": "A simple integration that retrieves weather information for a pre-selected group of locations from the AccuWeather API and integrates the retrieved information as a BigPanda alert",
-  "main": "src/index.ts",
+  "main": "src/app.ts",
   "scripts": {
     "prestart": "tsc -p tsconfig.json",
     "start": "node src/index.js",
