@@ -4,10 +4,8 @@
   "description": "A simple integration that retrieves weather information for a pre-selected group of locations from the AccuWeather API and integrates the retrieved information as a BigPanda alert",
   "main": "src/app.ts",
   "scripts": {
-    "prestart": "tsc -p tsconfig.json",
-    "start": "node src/index.js",
-    "pretest": "tsc -p tsconfig.json",
-    "test": "mocha"
+    "start": "ts-node src/app.ts",
+    "test": "mocha -r ts-node/register test/**/*.test.ts"
   },
   "repository": {
     "type": "git",
@@ -28,8 +26,11 @@
     "typescript": "^4.2.4"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.16",
+    "@types/mocha": "^8.2.2",
     "chai": "^4.3.4",
     "mocha": "^8.3.2",
-    "nock": "^13.0.11"
+    "nock": "^13.0.11",
+    "ts-node": "^9.1.1"
   }
 }

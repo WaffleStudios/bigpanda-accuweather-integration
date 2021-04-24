@@ -1,13 +1,13 @@
-const { BigPandaAPI, BigPandaError } = require("../src/apis/bigpanda");
+import { BigPandaAPI, BigPandaError } from "../src/apis/bigpanda";
 
-const { expect } = require("chai");
+import { expect } from "chai";
 const nock = require("nock");
 const responses = require("./bigpanda-responses");
 
-const bearerToken = "bearer_token";
-const appKey = "app_key";
+const bearerToken: string = "bearer_token";
+const appKey: string = "app_key";
 
-const alertPayload = {
+const alertPayload: object = {
     app_key: "test_app_key",
     status: "warning",
     host: "test_location",
@@ -19,7 +19,7 @@ const alertPayload = {
     link: "http://www.accuweather.com/en/us/new-york-ny/10007/current-weather/349727?lang=en-us",
 };
 
-const bigPandaAPI = new BigPandaAPI(bearerToken);
+const bigPandaAPI: BigPandaAPI = new BigPandaAPI(bearerToken);
 
 /**
  * Unit tests exist to make sure that the code is running correctly and that anticipated errors can be handled and rerouted
@@ -29,7 +29,7 @@ const bigPandaAPI = new BigPandaAPI(bearerToken);
 describe('BigPanda', () => {
     describe('Invalid Bearer Token', () => {
         it('Undefined bearer token', () => {
-            const undefinedDeclaration = () => { new BigPandaAPI() };
+            const undefinedDeclaration = () => { new BigPandaAPI(undefined) };
             expect(undefinedDeclaration).to.throw(BigPandaError, "Bearer Token");
         });
 

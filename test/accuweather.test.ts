@@ -1,12 +1,14 @@
-const { AccuWeatherAPI, AccuWeatherError } = require("../src/apis/accuweather");
+import { AccuWeatherAPI, AccuWeatherError } from "../src/apis/accuweather";
 
-const { expect } = require("chai");
+import { expect } from "chai";
 const nock = require("nock");
 const responses = require("./accuweather-responses");
 
-const location = "location";
-const locationId = "location_id";
-const apiKey = "api_key";
+const location_name: string = "location";
+const locationId: string = "location_id";
+const apiKey: string = "api_key";
+
+const accuWeatherAPI: AccuWeatherAPI = new AccuWeatherAPI(apiKey);
 
 /**
  * Unit tests exist to make sure that the code is running correctly and that anticipated errors can be handled and rerouted
@@ -19,11 +21,10 @@ const apiKey = "api_key";
  * with invalid credentials, running an API call without providing a location ID, and a successful test.
  */
 describe('AccuWeather API', () => {
-    const accuWeatherAPI = new AccuWeatherAPI(apiKey);
 
     describe('Invalid API Key', () => {
         it('Undefined API key', () => {
-            const undefinedDeclaration = () => { new AccuWeatherAPI() };
+            const undefinedDeclaration = () => { new AccuWeatherAPI(undefined) };
             expect(undefinedDeclaration).to.throw(AccuWeatherError);
         });
 
@@ -40,7 +41,7 @@ describe('AccuWeather API', () => {
 
     describe('Invalid Location ID', () => {
         it('Undefined location ID', () => {
-            const undefinedDeclaration = () => { accuWeatherAPI.fetchCurrentConditions() };
+            const undefinedDeclaration = () => { accuWeatherAPI.fetchCurrentConditions(undefined) };
             expect(undefinedDeclaration).to.throw(AccuWeatherError);
         });
 
@@ -80,24 +81,23 @@ describe('AccuWeather API', () => {
 });
 
 /**
- * This is a suite of tests designed to test the AccuWeather API configuration.  This tests creating a new API instance
- * with invalid credentials, running an API call without providing a location ID, and a successful test.
+ * This is a suite of tests designed to test the conversion of AccuWeather JSON responses to a BigPanda alert payload.
+ * This tests creating JSON conversion with a bad location name, bad location IDs, and bad JSON responses, in addition to
+ * a sunny day test that ensures that the data is formatted correctly.
  */
 describe('AccuWeather JSON Conversion', () => {
-    const accuWeatherAPI = new AccuWeatherAPI(apiKey);
-
-    describe('Invalid Location', () => {
-        it('Undefined location', () => {
+    describe('Invalid Location Name', () => {
+        it('Undefined location name', () => {
             const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(undefined, locationId, responses["200"][0]) };
             expect(undefinedDeclaration).to.throw(AccuWeatherError, "location name");
         });
 
-        it('Empty location', () => {
+        it('Empty location name', () => {
             const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert("", locationId, responses["200"][0]) };
             expect(emptyDeclaration).to.throw(AccuWeatherError, "location name");
         });
 
-        it('Location trims to empty', () => {
+        it('Location name trims to empty', () => {
             const trimDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert("     ", locationId, responses["200"][0]) };
             expect(trimDeclaration).to.throw(AccuWeatherError, "location name");
         });
@@ -105,36 +105,36 @@ describe('AccuWeather JSON Conversion', () => {
 
     describe('Invalid Location ID', () => {
         it('Undefined location ID', () => {
-            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, undefined, responses["200"][0]) };
+            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, undefined, responses["200"][0]) };
             expect(undefinedDeclaration).to.throw(AccuWeatherError, "location ID");
         });
 
         it('Empty location ID', () => {
-            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, "", responses["200"][0]) };
+            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, "", responses["200"][0]) };
             expect(emptyDeclaration).to.throw(AccuWeatherError, "location ID");
         });
 
         it('Location ID trims to empty', () => {
-            const trimDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, "     ", responses["200"][0]) };
+            const trimDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, "     ", responses["200"][0]) };
             expect(trimDeclaration).to.throw(AccuWeatherError, "location ID");
         });
     });
 
     describe('Invalid JSON', () => {
         it('Undefined JSON', () => {
-            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationId, undefined) };
+            const undefinedDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, locationId, undefined) };
             expect(undefinedDeclaration).to.throw(AccuWeatherError, "valid response");
         });
 
         it('Empty JSON', () => {
-            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationId, {}) };
+            const emptyDeclaration = () => { accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, locationId, {}) };
             expect(emptyDeclaration).to.throw(AccuWeatherError, "valid response");
         });
     });
 
     describe('Successful Conversion', () => {
         it('JSON is successfully converted to a BigPanda alert.', (done) => {
-            accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationId, responses["200"][0])
+            accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, locationId, responses["200"][0])
                 .then((alertJSON) => {
                     expect(JSON.stringify(alertJSON)).to.equal(JSON.stringify(responses["bigPandaAlert"]));
                     done();
