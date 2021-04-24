@@ -27,7 +27,7 @@ try {
 
     /**
      * Initializes a simple Express server to listen for API calls to fetch new weather events.  To use this, send an
-     * POST call to http://localhost:3000/alert with a json formatted: {"locationName": "San Francisco", "locationID": "347629"}.
+     * POST call to http://localhost:3000/alert with a json formatted: {"locationName": "Austin", "locationID": "351193"}.
      *
      * This was built to demonstrate the flexibility and reusability of the API handlers that I wrote, as well as
      * highlight a potential use-case beyond the static examples provided in the exercise document.
