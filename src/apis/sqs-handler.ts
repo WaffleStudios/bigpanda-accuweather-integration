@@ -3,7 +3,6 @@ import * as SQS from "aws-sdk/clients/sqs";
 require('dotenv').config();
 
 const AWS = require("aws-sdk");
-const https = require("https");
 const { Consumer } = require("sqs-consumer");
 import {
     Message,
@@ -35,13 +34,7 @@ export class SQSHandler {
         }
 
         AWS.config.update({region: "us-east-2"});
-        this.sqs = new AWS.SQS({
-            httpOptions: {
-                agent: new https.Agent({
-                    keepAlive: true
-                })
-            }
-        });
+        this.sqs = new AWS.SQS();
 
         this.url = url;
     }
