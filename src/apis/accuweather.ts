@@ -59,18 +59,41 @@ export class AccuWeatherAPI {
             throw new AccuWeatherError("Error: Please provide a valid response from the Current Conditions endpoint.");
         }
 
+        const farenheit: number = conditionsJSON["Temperature"]["Imperial"]["Value"];
+        const hasPrecipitation: boolean = conditionsJSON["HasPrecipitation"];
+        const weatherDescription: string = conditionsJSON["WeatherText"];
+
+        /**
+         * Just a weather-based status change.
+         *
+         * Most conditions will produce a warning alert.
+         *
+         * If there's precipitation (rain, snow, etc.) or the temperature in Farenheit is higher than 102° or below freezing,
+         * then the weather will be flagged as critical.
+         *
+         * If it's sunny or partly sunny and between 32 and 101°, then the alert will flag as OK.
+         *
+         * This isn't a requirement, but if I was looking at weather alerts, this is roughly how I'd want to be alerted.
+         */
+        let status: string = "warning";
+        if(hasPrecipitation || farenheit >= 102 || farenheit < 32) {
+            status = "critical";
+        } else if(weatherDescription.toLowerCase().includes("sunny")) {
+            status = "ok"
+        }
+
         return new Promise((resolve) => {
             let alertJSON: object = {
                 host: location,
-                status: "warning",
-                check: conditionsJSON["WeatherText"],
-                incident_identifier: locationID,
-                condition: conditionsJSON["WeatherText"],
-                precipitation: conditionsJSON["HasPrecipitation"],
+                status: status,
+                check: "Weather Check",
+                incident_identifier: `${locationID}_${Math.floor(Math.random() * 101)}`,
+                condition: weatherDescription,
+                precipitation: hasPrecipitation,
                 precipitation_type: conditionsJSON["PrecipitationType"],
                 link: conditionsJSON["Link"],
                 temperature_celsius: conditionsJSON["Temperature"]["Metric"]["Value"],
-                temperature_farenheit: conditionsJSON["Temperature"]["Imperial"]["Value"]
+                temperature_farenheit: farenheit
             };
 
             resolve(alertJSON);

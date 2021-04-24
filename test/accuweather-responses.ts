@@ -25,8 +25,8 @@ module.exports = {
     bigPandaAlert: {
         host: "location",
         status: "warning",
-        check: "Partly cloudy",
-        incident_identifier: "location_id",
+        check: "Weather Check",
+        incident_identifier: "location_id_101",
         condition: "Partly cloudy",
         precipitation: false,
         precipitation_type: null,

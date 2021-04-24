@@ -2,6 +2,7 @@ import { AccuWeatherAPI, AccuWeatherError } from "../src/apis/accuweather";
 
 import { expect } from "chai";
 const nock = require("nock");
+const sinon = require("sinon");
 const responses = require("./accuweather-responses");
 
 const location_name: string = "location";
@@ -134,6 +135,7 @@ describe('AccuWeather JSON Conversion', () => {
 
     describe('Successful Conversion', () => {
         it('JSON is successfully converted to a BigPanda alert.', (done) => {
+            sinon.stub(Math, "random").returns(1);
             accuWeatherAPI.formatConditionsAsBigPandaAlert(location_name, locationId, responses["200"][0])
                 .then((alertJSON) => {
                     expect(JSON.stringify(alertJSON)).to.equal(JSON.stringify(responses["bigPandaAlert"]));
