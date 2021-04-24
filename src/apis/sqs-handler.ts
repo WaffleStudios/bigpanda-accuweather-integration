@@ -51,22 +51,13 @@ export class SQSHandler {
             throw new SQSHandlerError("Please provide a valid message to send to SQS.");
         }
 
-        return new Promise((resolve, reject) => {
+        const params = {
+            DelaySeconds: 10,
+            MessageBody: message,
+            QueueUrl: this.url
+        };
 
-            const params = {
-                DelaySeconds: 10,
-                MessageBody: message,
-                QueueUrl: this.url
-            };
-
-            this.sqs.sendMessage(params, function (err, data) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(data.MessageId);
-                }
-            });
-        });
+        return this.sqs.sendMessage(params).promise();
     }
 
     /**
@@ -79,21 +70,12 @@ export class SQSHandler {
             throw new SQSHandlerError("Please provide a valid receipt handle to delete.");
         }
 
-        return new Promise((resolve, reject) => {
+        const params = {
+            ReceiptHandle: receiptHandle,
+            QueueUrl: this.url
+        };
 
-            const params = {
-                ReceiptHandle: receiptHandle,
-                QueueUrl: this.url
-            };
-
-            this.sqs.deleteMessage(params, function (err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve("Message Deleted");
-                }
-            });
-        });
+        return this.sqs.deleteMessage(params).promise();
     }
 
     /**

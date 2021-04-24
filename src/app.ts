@@ -72,7 +72,7 @@ try {
             accuWeatherAPI.fetchCurrentConditions(locationID)
                 .then(({ body }) => accuWeatherAPI.formatConditionsAsBigPandaAlert(location, locationID, body[0]))
                 .then((alertJSON: object) => sqsHandler.sendMessage(JSON.stringify(alertJSON)))
-                .then((messageID) => console.log(`Message Successfully Queued! SQS Message ID: ${messageID}`))
+                .then(({ MessageId}) => console.log(`Message Successfully Queued! SQS Message ID: ${MessageId}`))
                 .catch((error) => handleApiError(error));
         });
     });
