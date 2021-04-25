@@ -7,7 +7,8 @@
  */
 require("dotenv").config();
 
-const express = require('express');
+const express = require("express");
+const prompt = require("prompt-sync")();
 import got from "got";
 import { Message } from "aws-sdk/clients/sqs";
 
@@ -39,9 +40,9 @@ try {
     app.post("/alert", (req, res) => {
         const { locationName, locationID } = req.body;
         if(!locationName || locationName.trim() === "") {
-            res.status(400).send('Please provide a valid location name.')
+            res.status(400).send("Please provide a valid location name.")
         } else if(!locationID || locationID.trim() === "") {
-            res.status(400).send('Please provide a valid location ID,')
+            res.status(400).send("Please provide a valid location ID,")
         }
 
         accuWeatherAPI.fetchCurrentConditions(locationID)
@@ -59,7 +60,7 @@ try {
 
     app.listen(port);
 
-    console.log('Listening for Location JSON on Port: ' + port);
+    console.log("Listening for Location JSON on Port: " + port);
 
     /**
      * Starts the SQS consumer. This will poll every few seconds to receive any incoming SQS messages to the provided queue.
@@ -75,23 +76,26 @@ try {
             .catch((error) => handleApiError(error));
     });
 
-    console.log('Listening for Messages from SQS');
+    console.log("Listening for Messages from SQS");
 
     /**
      * SQS offers configurations to retry messages a number of times between 1-100.  After the specified number of retries,
      * SQS will automatically move the message into a configurable dead-letter queue.  The queue that I set up for this
      * exercise will dead-letter the message after five tries.
      *
-     * Uncomment this block of code to start a Dead-Letter queue listener.
+     * This code will start the Dead-Letter Queue, with user prompt.
      */
-    // const deadLetterHandler: SQSHandler = new SQSHandler(process.env.AWS_DLQ_URL);
-    // deadLetterHandler.startConsumer((message: Message) => {
-    //     bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
-    //         .then(() => console.log("BigPanda Alert Successfully Processed!"))
-    //         .catch((error) => handleApiError(error));
-    // });
-    //
-    // console.log('Listening for Messages from the Dead-Letter Queue');
+    let runDeadLetter: string = prompt("Start Dead-Letter Queue Listener? (y/n): ");
+    if(runDeadLetter.toLowerCase() === "y") {
+        const deadLetterHandler: SQSHandler = new SQSHandler(process.env.AWS_DLQ_URL);
+        deadLetterHandler.startConsumer((message: Message) => {
+            bigPandaAPI.sendAlert(process.env.BIGPANDA_API_KEY, JSON.parse(message.Body))
+                .then(() => console.log("BigPanda Alert Successfully Processed!"))
+                .catch((error) => handleApiError(error));
+        });
+
+        console.log("Listening for Messages from the Dead-Letter Queue");
+    }
 
     console.log("Sending exercise test data.");
 
