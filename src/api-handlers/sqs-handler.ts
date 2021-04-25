@@ -14,9 +14,7 @@ export class SQSHandler {
     private sqs: SQS;
 
     /**
-     * Creates a class for managing the message queue using AWS SQS using a queue URL.  Something that I think would be good
-     * to add to this would be to add a static method to create a new Queue, as well as the ability to use queue names and
-     * servers instead of providing a URL, but for this exercise, I just need the URL.
+     * Creates a class for managing the message queue using AWS SQS using a queue URL.
      *
      * Unlike the API constructions, there's no way to specify, in code, new credentials, so those live in the .env file
      * where the rest of the process.env variables are stored.  I think that in a role like the Solutions Engineer, AWS
@@ -39,8 +37,10 @@ export class SQSHandler {
     }
 
     /**
-     * Adds a provided message to the SQS queue.  For the purposes of the exercise, this will be a JSON string of the BigPanda
-     * alert message, but this method could be used to send any message.
+     * Adds a provided message to the SQS queue.
+     *
+     * @throws SQSHandlerError
+     *
      * @param message A non-empty string to apply as the message body for the SQS message.
      */
     sendMessage(message: string) {
@@ -58,7 +58,7 @@ export class SQSHandler {
     }
 
     /**
-     * Initializes a consumer for the SQS queue URL provided in the construction of the Handler.
+     * Initializes a consumer for the SQS queue.
      * @param messageHandler A callback method which process a message from the SQS queue.
      */
     startConsumer(messageHandler: (message: Message) => void) {

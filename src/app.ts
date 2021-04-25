@@ -27,7 +27,7 @@ try {
     const sqsHandler: SQSHandler = new SQSHandler(process.env.AWS_SQS_URL);
 
     /**
-     * Initializes a simple Express server to listen for API calls to fetch new weather events.  To use this, send an
+     * Initialize a simple Express server to listen for API calls to fetch new weather events.  To use this, send an
      * POST call to http://localhost:3000/alert with a json formatted: {"locationName": "Austin", "locationID": "351193"}.
      *
      * This was built to demonstrate the flexibility and reusability of the API handlers that I wrote, as well as
@@ -66,7 +66,7 @@ try {
      * Starts the SQS consumer. This will poll every few seconds to receive any incoming SQS messages to the provided queue.
      *
      * Normally, in a live app using SQS, I would use a Lambda to do this. This is because you are able to tie a Lambda
-     * in with the SQS so that the Lambda is able to process the queued message upon receipt. For the purposes of this
+     * in with the queue so that the Lambda is able to process the message upon receipt. For the purposes of this
      * exercise or a case where, for some reason, a Lambda could not be used, you can run this as a standalone service
      * to listen and process messages in a provided SQS queue.
      */
@@ -97,8 +97,6 @@ try {
         console.log("Listening for Messages from the Dead-Letter Queue");
     }
 
-    console.log("Sending exercise test data.");
-
     /**
      * Automatically makes a call to the now running API to send alerts for the locations provided in the exercise.
      */
@@ -107,6 +105,8 @@ try {
     locations.set("San Francisco", ["347629", "113032", "261737", "3409211", "262723"]);
     locations.set("New York", ["349727", "710949", "2531279", "2245721", "2212053"]);
     locations.set("Chicago", ["348308", "2249562", "1162619", "1169367", "1068089"]);
+
+    console.log("Sending exercise test data.");
 
     locations.forEach((locationIDs: string[], location: string) => {
         locationIDs.forEach((locationID: string) => {
@@ -121,10 +121,12 @@ try {
 }
 
 /**
- * This is just a simple class to handle errors coming from any of the API or web handler classes.  Since they're always
- * either HTTP errors from `got` or standard errors, the handling is the same.  This is just a code cleanliness thing to
- * keep it dry.  This just logs details about the error for help debugging.
- * @param error
+ * A simple function to handle errors coming from any of the API or web handler classes.  Since they're always either HTTP\
+ * errors from `got` or standard errors, the handling is the same.  This is just a code cleanliness thing to keep it DRY.
+ *
+ * Logs details about the error for help debugging.
+ *
+ * @param error The error being logged.
  */
 function handleApiError(error: Error) {
     if (error["response"]) {

@@ -7,8 +7,7 @@ export class AccuWeatherAPI {
 
     /**
      * Creates a class for managing the AccuWeather API.  This includes management and light verification of API credentials,
-     * as well as methods to perform any required outbound API calls.  For the purposes of the exercise, only the `currentconditions`
-     * endpoint is needed, but new methods would be very simple to add as need be.
+     * as well as methods to perform any required outbound API calls.
      *
      * @constructs AccuWeatherAPI
      * @throws AccuWeatherError
@@ -73,7 +72,8 @@ export class AccuWeatherAPI {
          *
          * If it's sunny or partly sunny and between 32 and 101°, then the alert will flag as OK.
          *
-         * This isn't a requirement, but if I was looking at weather alerts, this is roughly how I'd want to be alerted.
+         * Written to give the weather alerts arbitrary importance, based on if I was looking at weather alerts, this is
+         * roughly how I'd want to be alerted.
          */
         let status: string = "warning";
         if(hasPrecipitation || farenheit >= 102 || farenheit < 32) {

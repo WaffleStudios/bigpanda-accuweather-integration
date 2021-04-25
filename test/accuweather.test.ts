@@ -83,7 +83,7 @@ describe('AccuWeather API', () => {
 
 /**
  * This is a suite of tests designed to test the conversion of AccuWeather JSON responses to a BigPanda alert payload.
- * This tests creating JSON conversion with a bad location name, bad location IDs, and bad JSON responses, in addition to
+ * This tests attempting JSON conversion with a bad location name, bad location IDs, and bad JSON responses, in addition to
  * a sunny day test that ensures that the data is formatted correctly.
  */
 describe('AccuWeather JSON Conversion', () => {

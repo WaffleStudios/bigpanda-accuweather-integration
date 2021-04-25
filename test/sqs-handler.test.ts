@@ -7,9 +7,12 @@ const sqsURL: string = "https://sqs.us-east-2.amazonaws.com/12345/test-queue";
 const sqsHandler: SQSHandler = new SQSHandler(sqsURL);
 
 /**
- * Unit tests exist to make sure that the code is running correctly and that anticipated errors can be handled and rerouted
- * correctly.  I'm using these tests to make sure that all of my problem cases are addressed and provide useful, meaningful
- * responses.  The rest of the code specifically relies on the AWS service running, so it's just method validity tests.
+ * Tests to make sure that all of my problem cases are addressed and provide useful, meaningful
+ * responses.
+ */
+
+/**
+ * Most of the code in this class specifically relies on the AWS service running, so it's just method validity tests.
  */
 describe('SQS Handler', () => {
     describe('Initializing with an Invalid URL', () => {

@@ -7,8 +7,7 @@ export class BigPandaAPI {
 
     /**
      * Creates a class for managing the BigPanda API.  This includes management and light verification of API credentials,
-     * as well as methods to perform any required outbound API calls.  For the purposes of the exercise, only the `alerts`
-     * endpoint is needed, but new methods would be very simple to add as need be.
+     * as well as methods to perform any required outbound API calls.
      *
      * @constructs BigPandaAPI
      * @throws BigPandaError
@@ -29,7 +28,8 @@ export class BigPandaAPI {
      * @throws BigPandaError
      *
      * @param appKey The App Key for the integration that the user is trying to alert.  Throws an error if the key is empty or undefined.
-     * @param alert The JSON for the alert being sent to BigPanda.  Should .
+     * @param alert The JSON for the alert being sent to BigPanda.  Should be a single entry.  Fails if it doesn't exist,
+     *          is an array, or doesn't contain the required "host" or "status" fields.
      */
     sendAlert(appKey: string, alert: object) {
         if(!appKey || appKey.trim() === "") {

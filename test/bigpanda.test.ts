@@ -22,9 +22,13 @@ const alertPayload: object = {
 const bigPandaAPI: BigPandaAPI = new BigPandaAPI(bearerToken);
 
 /**
- * Unit tests exist to make sure that the code is running correctly and that anticipated errors can be handled and rerouted
- * correctly.  I'm using these tests to make sure that all of my problem cases are addressed and provide useful, meaningful
+ * Tests to make sure that all of my problem cases are addressed and provide useful, meaningful
  * responses, as well as to test a sunny day API call.  Uses the `nock` library to mock the API calls being made.
+ */
+
+/**
+ * Testing initialization of the BigPanda API handler and sending a BigPanda alert.  Makes sure that all of the variable
+ * checks for each method run correctly and that we're able to send an alert to BigPanda correctly.
  */
 describe('BigPanda', () => {
     describe('Invalid Bearer Token', () => {
