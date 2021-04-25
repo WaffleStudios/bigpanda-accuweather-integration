@@ -2,6 +2,7 @@
 
 # Ignore compiled JavaScript files.
 src/**/*.js
+test/**/*.js
 
 ## GITHUB DEFAULT GITIGNORE FOR NODEJS ##
 
