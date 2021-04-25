@@ -34,17 +34,17 @@ describe('SQS Handler', () => {
 
     describe('Trying to Send an Invalid Message', () => {
         it('Undefined message', () => {
-            const undefinedDeclaration = () => { sqsHandler.sendMessage(undefined) };
+            const undefinedDeclaration = () => { sqsHandler.sendMessage(0, undefined) };
             expect(undefinedDeclaration).to.throw(SQSHandlerError, "valid message");
         });
 
         it('Empty message', () => {
-            const emptyDeclaration = () => { sqsHandler.sendMessage("") };
+            const emptyDeclaration = () => { sqsHandler.sendMessage(0, "") };
             expect(emptyDeclaration).to.throw(SQSHandlerError, "valid message");
         });
 
         it('Message trims to empty', () => {
-            const trimDeclaration = () => { sqsHandler.sendMessage("     ") };
+            const trimDeclaration = () => { sqsHandler.sendMessage(0, "     ") };
             expect(trimDeclaration).to.throw(SQSHandlerError, "valid message");
         });
     });

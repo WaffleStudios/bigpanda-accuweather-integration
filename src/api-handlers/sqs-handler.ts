@@ -5,7 +5,7 @@ require('dotenv').config();
 const AWS = require("aws-sdk");
 const { Consumer } = require("sqs-consumer");
 import {
-    Message,
+    Message, MessageBodyAttributeMap,
     SendMessageRequest,
 } from "aws-sdk/clients/sqs";
 
@@ -41,15 +41,28 @@ export class SQSHandler {
      *
      * @throws SQSHandlerError
      *
+     * @param retriesRemaining The number of retries left until moving to Dead-Letter Queue.  This is to correctly handle
+     *                      errors thrown in the `got` library, which do not automatically requeue correctly using the SQS consumer.
      * @param message A non-empty string to apply as the message body for the SQS message.
      */
-    sendMessage(message: string) {
+    sendMessage(retriesRemaining: number, message: string) {
         if(!message || message.trim() === "") {
             throw new SQSHandlerError("Please provide a valid message to send to SQS.");
         }
 
+        let attributes: MessageBodyAttributeMap = {};
+        if(typeof retriesRemaining === "number") {
+            attributes = {
+                Retries: {
+                    DataType: "Number",
+                    StringValue: `${retriesRemaining}`
+                }
+            };
+        }
+
         const params: SendMessageRequest = {
             DelaySeconds: 10,
+            MessageAttributes: attributes,
             MessageBody: message,
             QueueUrl: this.url
         };
@@ -65,7 +78,8 @@ export class SQSHandler {
         const app = Consumer.create({
             queueUrl: this.url,
             handleMessage: messageHandler,
-            sqs: this.sqs
+            sqs: this.sqs,
+            messageAttributeNames: ["Retries"]
         });
 
         app.on('error', (error) => {
